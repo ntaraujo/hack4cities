@@ -8,6 +8,7 @@ class Database:
         # Inicializar Classe
         self.dbfile = dbfile
         self.silent = silent
+        self.con = self.cur = None
         self.create_connection()
 
     def create_connection(self):
