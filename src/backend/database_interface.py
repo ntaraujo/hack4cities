@@ -42,7 +42,7 @@ class Database:
         self.cur.execute("SELECT id, valor FROM vazao WHERE tempo=?", (time, ))
         flow = self.cur.fetchall()
         for item in flow:
-            data.append({"id": flow[0], "valor": flow[1]})
+            data.append({"id": item[0], "valor": item[1]})
         return data
     
     def get_info(self, id):
