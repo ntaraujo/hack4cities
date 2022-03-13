@@ -14,7 +14,6 @@ class Database:
         self.con = self.cur = None
         self._create_connection()
         self._create_database()
-        
 
     def _create_connection(self):
         # Tentar criar a conexão com a base de dados

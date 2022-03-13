@@ -4,14 +4,9 @@ CREATE TABLE IF NOT EXISTS "dispositivo" (
 	"cordx"	INTEGER NOT NULL,
 	"cordy"	INTEGER NOT NULL,
 	"instalacao"	INTEGER,
+	"tipo"	TEXT NOT NULL DEFAULT 'N/A',
 	"idproximo"	INTEGER,
 	FOREIGN KEY("idproximo") REFERENCES "dispositivo",
 	PRIMARY KEY("id")
-);
-CREATE TABLE IF NOT EXISTS "vazao" (
-	"id"	INTEGER NOT NULL,
-	"tempo"	INTEGER NOT NULL,
-	"valor"	REAL NOT NULL,
-	FOREIGN KEY("id") REFERENCES "dispositivo"("id")
 );
 COMMIT;
