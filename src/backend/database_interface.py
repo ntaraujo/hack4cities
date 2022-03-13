@@ -2,6 +2,7 @@
 
 import sqlite3 as sql
 from os import path
+from sys import argv
 
 
 class Database:
@@ -40,8 +41,9 @@ class Database:
         data = []
         self.cur.execute("SELECT id, valor FROM vazao WHERE tempo=?", (time, ))
         flow = self.cur.fetchall()
-        self
-        return flow
+        for item in flow:
+            data.append({"id": flow[0], "valor": flow[1]})
+        return data
     
     def get_info(self, id):
         self.cur.execute("SELECT cordx, cordy, instalacao, idproximo FROM dispositivo WHERE id=?", (id,))
@@ -50,15 +52,18 @@ class Database:
         return data
         
 
-        
-
-
-
 # Tratamento caso o script seja executado diretamente
 if __name__ == "__main__":
-    #db = Database()
-    #print(db.get_data(1))
-    #print(db.get_info(1))
-    raise (Exception(
-        "ERRO\n\"database_interface.py\" não foi feito para ser executado por si só, pois se trata de uma biblioteca."))
+
+    try:
+        arg1 = argv[1]
+    except:
+        arg1 = None
+
+    if arg1 == "--debug":
+        db = Database()
+        print(db.get_data(1))
+    else:
+        raise (Exception(
+            f"\"{argv[0]}\" não foi feito para ser executado por si só, pois se trata de uma biblioteca."))
     
