@@ -50,7 +50,7 @@ def register_hidrometers():
 def map_values():
     for hidrometer in hidrometers.values():
         popup = hidrometer["tipo"]
-        if popup == "casa":
+        if popup == "Casa":
             popup += ": " + str(hidrometer["instalacao"])
 
         new_marker = {
