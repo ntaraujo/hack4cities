@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>Flask Leaflet Website</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/universal.css') }}" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+crossorigin=""></script>
+</head>
+<body>
+<div id="map"></div>
+<script src="{{ url_for('static', filename='js/universal.js') }}" /></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+{% for marker in markers %}
+function onMarkerClick(e) {
+   window.open("http://www.google.com/maps/place/{{ marker['lat'] }},{{ marker['lon'] }}", '_blank').focus();
+}
+L.circle([{{ marker['lat'] }}, {{ marker['lon'] }}], {
+    color: "{{marker['color']}}",
+    fillColor: "{{marker['fillColor']}}",
+    fillOpacity: {{marker['fillOpacity']}},
+    radius: {{marker['radius']}}
+}).addTo(map)
+.bindPopup("{{ marker['lat'] }}, {{ marker['lon'] }}")
+.on('dblclick', onMarkerClick );
+{% endfor %}
+</script>
+</body>
+</html>
