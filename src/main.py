@@ -13,7 +13,7 @@ def root():
             'color': 'red',
             'fillColor': '#f03',
             'fillOpacity': 0.5,
-            'radius': 500
+            'radius': 5
         }
     ]
     return render_template('index.html', markers=markers)
