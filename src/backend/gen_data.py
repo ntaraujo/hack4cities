@@ -23,6 +23,7 @@ intermediarios = []
 for enum, d in enumerate(devices):
     if d["label"] == "inicio":
         inicio = enum
+        vol_vazamento = 0.1
         for time in range(geninit, genend + 1):
             data = []
             total = 0
@@ -30,14 +31,17 @@ for enum, d in enumerate(devices):
                 randomvalue = round(random.uniform(0, 2), 1)
                 if d["label"] != "inicio":
                     data.append({"id": d["id"], "tempo": time, "valor": randomvalue})
-                total += randomvalue
+                total += randomvalue - vol_vazamento
+
             data.append({"id": devices[inicio]["id"], "tempo": time, "valor": total})
-            print(data)
-            print(total)
+            #print(data)
+            #print(total)
+            vol_vazamento += 0.05
             sql = "INSERT INTO vazao(id, tempo, valor) VALUES (?, ?, ?)"
             for entry in data:
                 db.cur.execute(sql, (entry["id"], entry["tempo"], entry["valor"]))
 
 
 
-# db.con.commit()
+
+db.con.commit()
