@@ -1,47 +1,62 @@
 from flask import Flask, render_template
 from backend.database_interface import Database
-import os
+from collections.abc import Mapping
+from os import path
 
 app = Flask(__name__)
 
-this_dir = os.path.abspath(os.path.dirname(__file__))
+this_dir = path.abspath(path.dirname(__file__))
 
+db = Database(path.join(this_dir, "backend", "database.db"), path.join(this_dir, "backend", "database.sql"))
+markers = []
+lines = []
+hidrometers = {}
 
-
-@app.route('/')
-def root():
-    
-    db = Database(os.path.join(this_dir, "backend", "database.db"), os.path.join(this_dir, "backend", "database.sql"))
-    markers = []
-    lines = []
-    hidrometers = {}
-
-    for data in db.get_data(1):
-        this_id = data["id"]
-        info = db.get_info(this_id)
-        info["valor"] = data["valor"]
-
-        next_id = info["idproximo"]
-        if next_id is None:
-            next_info = None
+def deep_update(d, u):
+    for k, v in u.items():
+        if isinstance(v, Mapping):
+            d[k] = deep_update(d.get(k, {}), v)
         else:
-            next_info = db.get_info(next_id)
-            if next_id in hidrometers:
-                hidrometers[next_id].update(next_info)
-            else:
-                hidrometers[next_id] = next_info
+            d[k] = v
+    return d
 
-            info["proximo"] = hidrometers[next_id]
+def register_hidrometer(data, time):
+    this_id = data["id"]
+    info = db.get_info(this_id)
+    info["valores"] = {time: data["valor"]}
 
-        if this_id in hidrometers:
-            hidrometers[this_id].update(info)
+    next_id = info["idproximo"]
+    if next_id is not None:
+        next_info = db.get_info(next_id)
+        if next_id in hidrometers:
+            deep_update(hidrometers[next_id], next_info)
         else:
-            hidrometers[this_id] = info
+            hidrometers[next_id] = next_info
+
+        info["proximo"] = hidrometers[next_id]
+    else:
+        info["proximo"] = None
+
+    if this_id in hidrometers:
+        deep_update(hidrometers[this_id], info)
+    else:
+        hidrometers[this_id] = info
+
+def register_hidrometers():
+    for time in range(1, 6):
+        for data in db.get_data(time):
+            register_hidrometer(data, time)
+
+def map_values():
+    for hidrometer in hidrometers.values():
+        popup = hidrometer["tipo"]
+        if popup == "casa":
+            popup += ": " + str(hidrometer["instalacao"])
 
         new_marker = {
-            'lat': info["x"],
-            'lon': info["y"],
-            'popup': f'Instalação: {info["instalacao"] or "N/A"} - {data["valor"]}m³/s',
+            'lat': hidrometer["x"],
+            'lon': hidrometer["y"],
+            'popup': popup,
             'color': 'green',
             # 'fillColor': '#f03',
             'fillOpacity': 1,
@@ -49,9 +64,16 @@ def root():
         }
         markers.append(new_marker)
 
-        if next_info is not None:
-            new_line = [info["x"], info["y"], next_info["x"], next_info["y"]]
+        next_hidrometer = hidrometer["proximo"]
+        if next_hidrometer is not None:
+            new_line = [hidrometer["x"], hidrometer["y"], next_hidrometer["x"], next_hidrometer["y"]]
             lines.append(new_line)
+
+register_hidrometers()
+map_values()
+
+@app.route('/')
+def root():
 
     return render_template('index.html', markers=markers, lines=lines)
 
