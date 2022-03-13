@@ -22,24 +22,36 @@
     </script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script>
+        
+        {% for line in lines %}
+
+        var pointA = new L.LatLng({{line[0]}}, {{line[1]}});
+        var pointB = new L.LatLng({{line[2]}}, {{line[3]}});
+        var pointList = [pointA, pointB];
+        var firstpolyline = new L.Polyline(pointList, {
+            color: 'green',
+            weight: 3,
+            opacity: 0.5,
+            smoothFactor: 1
+        });
+        firstpolyline.addTo(map);
+        
+        {% endfor %}
+
         {% for marker in markers %}
 
         function onMarkerClick(e) {
             window.open("http://www.google.com/maps/place/{{ marker['lat'] }},{{ marker['lon'] }}", '_blank').focus();
         }
-        L.marker([{{marker['lat']}}, {{marker['lon']}}]).addTo(map)
+        L.circle([{{marker['lat']}}, {{marker['lon']}}], {
+            color: 'blue',
+            fillOpacity: 0.5,
+            radius: 2
+            }).addTo(map)
             .bindPopup("{{ marker['popup'] }}")
-            .on('dblclick', onMarkerClick); {% endfor %} {% for line in lines %}
-        var pointA = new L.LatLng({{line[0]}}, {{line[1]}});
-        var pointB = new L.LatLng({{line[2]}}, {{line[3]}});
-        var pointList = [pointA, pointB];
-        var firstpolyline = new L.Polyline(pointList, {
-            color: 'red',
-            weight: 3,
-            opacity: 0.5,
-            smoothFactor: 1
-        });
-        firstpolyline.addTo(map); {% endfor %}
+            .on('dblclick', onMarkerClick);
+        
+        {% endfor %}
     </script>
 </body>
 
