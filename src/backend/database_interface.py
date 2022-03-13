@@ -38,12 +38,10 @@ class Database:
         self.cur.executescript(sql_script)
 
     def get_data(self, time):
-        data = []
         self.cur.execute("SELECT id, valor FROM vazao WHERE tempo=?", (time, ))
         flow = self.cur.fetchall()
         for item in flow:
-            data.append({"id": item[0], "valor": item[1]})
-        return data
+            yield {"id": item[0], "valor": item[1]}
     
     def get_info(self, id):
         self.cur.execute("SELECT cordx, cordy, instalacao, idproximo FROM dispositivo WHERE id=?", (id,))
