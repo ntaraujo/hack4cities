@@ -43,9 +43,9 @@ class Database:
             yield {"id": item[0], "valor": item[1]}
     
     def get_info(self, id):
-        self.cur.execute("SELECT cordx, cordy, instalacao, idproximo FROM dispositivo WHERE id=?", (id,))
+        self.cur.execute("SELECT cordx, cordy, instalacao, idproximo, tipo FROM dispositivo WHERE id=?", (id,))
         info = self.cur.fetchone()
-        data = {"x": info[0], "y": info[1], "instalacao": info[2], "idproximo": info[3]}
+        data = {"x": info[0], "y": info[1], "instalacao": info[2], "idproximo": info[3], "tipo": info[4]}
         return data
         
 
