@@ -78,7 +78,8 @@ def register_relations():
         for time, total_flow in total_flows.items():
             not_used_flows[time] = total_flow - used_flows[time]
         hidrometer["valores não utilizados"] = not_used_flows
-        hidrometer["perca"] = sum(not_used_flows.values()[1:])
+        not_used_flows_list = list(not_used_flows.values())
+        hidrometer["perca"] = sum(not_used_flows_list[1:]) - not_used_flows_list[0]
 
 def map_values():
     for hidrometer in hidrometers.values():
