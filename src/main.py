@@ -72,9 +72,6 @@ def register_relations():
         not_used_flows = {}
         proximo = hidrometer["proximo"]
         while proximo is not None:
-            if proximo["id"] == 4:
-                print('here')
-
             sum_update(used_flows, proximo["valores"])
             if proximo["tipo"] == "Intermediário":
                 break
