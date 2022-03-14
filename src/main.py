@@ -86,7 +86,7 @@ def map_values():
     for hidrometer in hidrometers.values():
         tipo = hidrometer["tipo"]
         popup = tipo + ": "
-        if tipo == "Casa":
+        if tipo in ("Casa", "Fim"):
             popup += str(hidrometer["instalacao"])
         else:
             popup += f'Perca estimada: {hidrometer["perca"]}m³/s'
