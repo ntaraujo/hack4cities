@@ -62,6 +62,9 @@ def sum_update(d, u):
             d[k] = v
     return d
 
+def get_loss(h):
+    return hidrometers[h["fonteid"]]["perca"]
+
 def register_relations():
     for hidrometer in first_hidrometers:
         total_flows = hidrometer["valores"]
@@ -75,8 +78,6 @@ def register_relations():
             sum_update(used_flows, proximo["valores"])
             if proximo["tipo"] == "Intermediário":
                 break
-            else:
-                proximo["fonte"] = hidrometer
             proximo = proximo["proximo"]
         for time, total_flow in total_flows.items():
             not_used_flows[time] = total_flow - used_flows[time]
@@ -106,10 +107,10 @@ def map_values():
 
         next_hidrometer = hidrometer["proximo"]
 
-        if "fonte" in hidrometer:
-            perca = hidrometer["fonte"]["perca"]
-        else:
+        if hidrometer["fonteid"] is None:
             perca = hidrometer["perca"]
+        else:
+            perca = get_loss(hidrometer)
 
         if next_hidrometer is not None:
             new_line = [hidrometer["x"], hidrometer["y"], next_hidrometer["x"], next_hidrometer["y"], perca]
