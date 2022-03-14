@@ -108,9 +108,11 @@ def map_values():
             perca = hidrometer["perca"]
         else:
             perca = get_loss(hidrometer)
+        perca = max(5, perca/4)
 
         if next_hidrometer is not None:
-            new_line = [hidrometer["x"], hidrometer["y"], next_hidrometer["x"], next_hidrometer["y"], perca]
+            color = 'green' if perca == 5 else 'red'
+            new_line = [hidrometer["x"], hidrometer["y"], next_hidrometer["x"], next_hidrometer["y"], perca, color]
             lines.append(new_line)
 
 register_hidrometers()
