@@ -83,8 +83,9 @@ def register_relations():
 
 def map_values():
     for hidrometer in hidrometers.values():
-        popup = hidrometer["tipo"] + ": "
-        if popup == "Casa":
+        tipo = hidrometer["tipo"]
+        popup = tipo + ": "
+        if tipo == "Casa":
             popup += str(hidrometer["instalacao"])
         else:
             popup += f'Perca estimada: {hidrometer["perca"]}m³/s'
