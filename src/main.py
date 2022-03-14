@@ -46,7 +46,7 @@ def register_hidrometer(data, time):
         hidrometers[this_id] = info
     
     this_hidrometer = hidrometers[this_id]
-    if this_hidrometer["tipo"] in ("Início", "Intermediário"):
+    if this_hidrometer["tipo"] in ("Início", "Intermediário") and this_hidrometer not in first_hidrometers:
         first_hidrometers.append(this_hidrometer)
 
 def register_hidrometers():
@@ -69,6 +69,9 @@ def register_relations():
         not_used_flows = {}
         proximo = hidrometer["proximo"]
         while proximo is not None:
+            if proximo["id"] == 4:
+                print('here')
+
             sum_update(used_flows, proximo["valores"])
             if proximo["tipo"] == "Intermediário":
                 break
@@ -102,8 +105,14 @@ def map_values():
         markers.append(new_marker)
 
         next_hidrometer = hidrometer["proximo"]
+
+        if "fonte" in hidrometer:
+            perca = hidrometer["fonte"]["perca"]
+        else:
+            perca = hidrometer["perca"]
+
         if next_hidrometer is not None:
-            new_line = [hidrometer["x"], hidrometer["y"], next_hidrometer["x"], next_hidrometer["y"], hidrometer["fonte"]["perca"]]
+            new_line = [hidrometer["x"], hidrometer["y"], next_hidrometer["x"], next_hidrometer["y"], perca]
             lines.append(new_line)
 
 register_hidrometers()
