@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS "dispositivo" (
 	"instalacao"	INTEGER,
 	"tipo"	TEXT NOT NULL DEFAULT 'N/A',
 	"idproximo"	INTEGER,
+	"fonteid"	INTEGER,
 	FOREIGN KEY("idproximo") REFERENCES "dispositivo",
 	PRIMARY KEY("id")
 );
