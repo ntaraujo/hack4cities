@@ -19,7 +19,6 @@ def deep_update(d, u):
             d[k] = deep_update(d.get(k, {}), v)
         else:
             d[k] = v
-    assert len(d) >= len(u)
     return d
 
 def register_hidrometer(data, time):
