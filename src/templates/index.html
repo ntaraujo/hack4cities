@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt">
 
 <head>
-    <title>Flask Leaflet Website</title>
+    <title>Desperdício nas Redes de Distribuição de Água</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/universal.css') }}" />
@@ -30,7 +30,7 @@
         var pointList = [pointA, pointB];
         var firstpolyline = new L.Polyline(pointList, {
             color: 'green',
-            weight: 3,
+            weight: {{line[4]}},
             opacity: 0.5,
             smoothFactor: 1
         });
