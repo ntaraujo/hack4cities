@@ -11,6 +11,7 @@ db = Database(path.join(this_dir, "backend", "database.db"), path.join(this_dir,
 markers = []
 lines = []
 hidrometers = {}
+first_hidrometers = []
 
 def deep_update(d, u):
     for k, v in u.items():
@@ -18,11 +19,13 @@ def deep_update(d, u):
             d[k] = deep_update(d.get(k, {}), v)
         else:
             d[k] = v
+    assert len(d) >= len(u)
     return d
 
 def register_hidrometer(data, time):
     this_id = data["id"]
     info = db.get_info(this_id)
+    info["id"] = this_id
     info["valores"] = {time: data["valor"]}
 
     next_id = info["idproximo"]
@@ -41,17 +44,49 @@ def register_hidrometer(data, time):
         deep_update(hidrometers[this_id], info)
     else:
         hidrometers[this_id] = info
+    
+    this_hidrometer = hidrometers[this_id]
+    if this_hidrometer["tipo"] in ("Início", "Intermediário"):
+        first_hidrometers.append(this_hidrometer)
 
 def register_hidrometers():
-    for time in range(1, 6):
+    for time in range(1, 11):
         for data in db.get_data(time):
             register_hidrometer(data, time)
 
+def sum_update(d, u):
+    for k, v in u.items():
+        if k in d:
+            d[k] += v
+        else:
+            d[k] = v
+    return d
+
+def register_relations():
+    for hidrometer in first_hidrometers:
+        total_flows = hidrometer["valores"]
+        used_flows = {}
+        not_used_flows = {}
+        proximo = hidrometer["proximo"]
+        while proximo is not None:
+            sum_update(used_flows, proximo["valores"])
+            if proximo["tipo"] == "Intermediário":
+                break
+            else:
+                proximo["fonte"] = hidrometer
+            proximo = proximo["proximo"]
+        for time, total_flow in total_flows.items():
+            not_used_flows[time] = total_flow - used_flows[time]
+        hidrometer["valores não utilizados"] = not_used_flows
+        hidrometer["perca"] = sum(not_used_flows.values()[1:])
+
 def map_values():
     for hidrometer in hidrometers.values():
-        popup = hidrometer["tipo"]
+        popup = hidrometer["tipo"] + ": "
         if popup == "Casa":
-            popup += ": " + str(hidrometer["instalacao"])
+            popup += str(hidrometer["instalacao"])
+        else:
+            popup += f'Perca estimada: {hidrometer["perca"]}m³/s'
 
         new_marker = {
             'lat': hidrometer["x"],
@@ -66,10 +101,11 @@ def map_values():
 
         next_hidrometer = hidrometer["proximo"]
         if next_hidrometer is not None:
-            new_line = [hidrometer["x"], hidrometer["y"], next_hidrometer["x"], next_hidrometer["y"]]
+            new_line = [hidrometer["x"], hidrometer["y"], next_hidrometer["x"], next_hidrometer["y"], hidrometer["fonte"]["perca"]]
             lines.append(new_line)
 
 register_hidrometers()
+register_relations()
 map_values()
 
 @app.route('/')
