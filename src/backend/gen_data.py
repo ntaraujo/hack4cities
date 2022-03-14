@@ -38,7 +38,7 @@ def gen_data():
                 for entry in data:
                     db.cur.execute(sql, (entry["id"], entry["tempo"], entry["valor"]))
 
-"""
+
 def gen_disps():
     num_casas = int(input("Numero de casas: "))
     cords = []
@@ -47,11 +47,24 @@ def gen_disps():
     ini_x2, ini_y2 = -23.734939435615058, -46.58102133227591
     varx, vary = ini_x2 - ini_x1, ini_y2 - ini_y1
 
-    cords.append({"x": ini_x1}, "y": ini_y1)
+    cords.append({"id": 16, "x": ini_x1, "y": ini_y1, "instalacao": random.randint(11111, 99999),
+                  "tipo": "Início", "idproximo": 17})
+    cords.append({"id": 17, "x": ini_x2, "y": ini_y2, "instalacao": random.randint(11111, 99999),
+                  "tipo": "Casa", "idproximo": 18})
     for a in range(num_casas):
-"""
+        x = cords[-1]["x"]
+        y = cords[-1]["y"]
+        print(num_casas, a)
+        if num_casas/2 == a+1:
+            tipo = "Intermediário"
+        elif num_casas == a+1:
+            tipo = "Fim"
+        else:
+            tipo = "Casa"
+        cords.append({"id": a+18, "x": x+varx*2, "y": y+vary*2.6, "instalacao": random.randint(11111, 99999),
+                      "tipo": tipo, "idproximo": a+19})
 
-
-
-#gen_disps()
-#db.con.commit()
+    sql = "INSERT INTO dispositivo(id, cordx, cordy, instalacao, tipo, idproximo) VALUES (?, ?, ?, ?, ?, ?)"
+    for inst in cords:
+        db.cur.execute(sql, (inst["id"], inst["x"], inst["y"],
+                             inst["instalacao"], inst["tipo"], inst["idproximo"]))
