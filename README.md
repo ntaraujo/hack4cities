@@ -3,6 +3,9 @@ Olá! Bem vindo ao repositório do projeto desenvolvido para o Hackaton [Hack4Ci
 
 O foco foi identificar e localizar vazamentos que ocorrem na rede de distribuição de água até a porta das residências.
 
+![image](https://user-images.githubusercontent.com/66187211/158873269-1f8c7807-1963-4341-a880-04391daade3d.png)
+![(670) Water Flow Analyzer (Grupo 10 - Vídeo Pitch) - YouTube](https://user-images.githubusercontent.com/66187211/158874173-ac49d649-2ac0-472d-bf59-03bfe4ca0989.png)
+
 # Como executar o código
 Primeiramente, é necessário que você instale o [Python](https://www.python.org/). No momento de criação desse programa, a versão era a 3.10
 Se você estiver no windows, não se esqueça de marcar a caixa "Adicionar Python ao PATH".
