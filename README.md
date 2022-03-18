@@ -1,4 +1,4 @@
-# Hack4Cities
+# Water Flow Analyser
 Olá! Bem vindo ao repositório do projeto desenvolvido para o Hackaton [Hack4Cities](https://hack4cities.com/)! Somos da equipe 10 e desenvolvemos o projeto caça-vazamentos.
 
 O foco foi identificar e localizar vazamentos que ocorrem na rede de distribuição de água até a porta das residências.
